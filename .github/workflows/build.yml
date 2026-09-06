@@ -1,0 +1,24 @@
+on:
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'psalm.xml'
+      - 'phpunit.xml.dist'
+
+  push:
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - '.gitattributes'
+      - 'psalm.xml'
+      - 'phpunit.xml.dist'
+
+name: build
+
+jobs:
+  ci:
+    uses: YiiRocks/.github/.github/workflows/ci.yml@main
+    with:
+      php-extensions: 'fileinfo, intl, pdo_sqlite'

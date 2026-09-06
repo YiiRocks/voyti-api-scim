@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         cacheResult="false"
+         requireCoverageMetadata="false"
+         beStrictAboutCoverageMetadata="true"
+         beStrictAboutOutputDuringTests="true"
+         executionOrder="random"
+         failOnRisky="true"
+         failOnWarning="true"
+         stopOnFailure="false"
+         colors="true"
+>
+  <php>
+    <ini name="error_reporting" value="-1"/>
+  </php>
+  <testsuites>
+    <testsuite name="YiiRocks Test Suite">
+      <directory>./tests</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+  </source>
+  <coverage>
+    <report>
+      <text outputFile="php://stdout" showOnlySummary="true"/>
+    </report>
+  </coverage>
+</phpunit>

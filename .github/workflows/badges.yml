@@ -1,0 +1,12 @@
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+
+name: badges
+
+jobs:
+  badges:
+    uses: YiiRocks/.github/.github/workflows/badges.yml@main

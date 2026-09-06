@@ -1,0 +1,107 @@
+{
+    "name": "yiirocks/voyti-api-scim",
+    "description": "SCIM 2.0 user-provisioning API for the YiiRocks Voyti Yii3 extension",
+    "type": "library",
+    "keywords": [
+        "yii",
+        "yii3",
+        "extension",
+        "scim",
+        "scim-2.0",
+        "identity-provisioning",
+        "user-provisioning",
+        "user-management"
+    ],
+    "homepage": "https://www.yii.rocks/voyti/",
+    "license": "BSD-3-Clause",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Mr.42",
+            "homepage": "https://mr42.me/",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/YiiRocks/voyti-api-scim/issues",
+        "source": "https://github.com/YiiRocks/voyti-api-scim/tree/main"
+    },
+    "require": {
+        "php": ">=8.3",
+        "psr/event-dispatcher": "^1.0",
+        "psr/http-message": "^1.0 || ^2.0",
+        "yiirocks/voyti-api": "^1.0",
+        "yiisoft/data-db": "^1.0",
+        "yiisoft/data-response": "^2.2",
+        "yiisoft/http": "^1.2",
+        "yiisoft/input-http": "^1.0",
+        "yiisoft/router": "^4.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "@stable",
+        "infection/infection": "^0.35.0",
+        "nyholm/psr7": "^1.8",
+        "phpunit/phpunit": "@stable",
+        "rector/rector": "^2.1.1",
+        "vimeo/psalm": "^6.0",
+        "yiirocks/voyti-views-bootstrap5": "^1.0",
+        "yiisoft/code-style": "^1.1",
+        "yiisoft/db-sqlite": "^2.0",
+        "yiisoft/dummy-provider": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "YiiRocks\\Voyti\\Api\\Scim\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "YiiRocks\\Voyti\\Api\\Scim\\tests\\": "tests"
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "scripts": {
+        "php-cs-fixer": "@php vendor/bin/php-cs-fixer fix",
+        "phpunit": "@php vendor/bin/phpunit",
+        "psalm": "@php vendor/bin/psalm",
+        "infection": "@php vendor/bin/infection",
+        "rector": "@php vendor/bin/rector process"
+    },
+    "scripts-descriptions": {
+        "php-cs-fixer": "Cleans to code with PHP Coding Standards Fixer.",
+        "phpunit": "PHPUnit - programmer-oriented testing framework.",
+        "psalm": "Psalm - static analysis tool for finding errors in PHP applications.",
+        "infection": "Infection - PHP Mutation Testing Framework.",
+        "rector": "Rector - automated tool for refactoring and upgrading PHP code."
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.0.x-dev"
+        },
+        "config-plugin-options": {
+            "source-directory": "config"
+        },
+        "config-plugin": {
+            "params": "params.php",
+            "di": "di.php"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "infection/extension-installer": true
+        }
+    },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/YiiRocks"
+        }
+    ]
+}
