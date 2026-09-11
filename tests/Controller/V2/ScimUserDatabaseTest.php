@@ -65,6 +65,14 @@ final class ScimUserDatabaseTest extends DatabaseTestCase
             'userName' => 'zed',
             'emails' => [['value' => 'aaa@example.com']],
         ]))->create()->getStatusCode());
+
+        $invalidPassword = $this->controller($factory->createServerRequest('POST', '/v2/Users')->withParsedBody([
+            'userName' => 'short-password',
+            'emails' => [['value' => 'short@example.com']],
+            'password' => 'x',
+        ]))->create();
+        self::assertSame(400, $invalidPassword->getStatusCode());
+        self::assertSame('invalidValue', $this->data($invalidPassword)['scimType']);
         $connection = ConnectionProvider::get();
         for ($i = 1; $i <= 26; $i++) {
             $connection->createCommand()->insert('user', [
@@ -236,8 +244,8 @@ final class ScimUserDatabaseTest extends DatabaseTestCase
         self::assertFalse($this->data($deactivated)['active']);
         $changed = $deactivated;
         $passwordCoerced = $this->controller($factory->createServerRequest('PUT', '/v2/Users/' . $id)->withHeader('If-Match', $changed->getHeaderLine('ETag'))->withParsedBody(['password' => 123]))->replace($id);
-        self::assertSame(200, $passwordCoerced->getStatusCode());
-        $changed = $passwordCoerced;
+        self::assertSame(400, $passwordCoerced->getStatusCode());
+        self::assertSame('invalidValue', $this->data($passwordCoerced)['scimType']);
         $patchedFinal = $this->controller($factory->createServerRequest('PATCH', '/v2/Users/' . $id)->withHeader('If-Match', $changed->getHeaderLine('ETag'))->withParsedBody([
             'schemas' => ['urn:ietf:params:scim:api:messages:2.0:PatchOp'],
             'Operations' => [
@@ -285,13 +293,17 @@ final class ScimUserDatabaseTest extends DatabaseTestCase
         $requests = $this->createStub(RequestProviderInterface::class);
         $requests->method('get')->willReturn($request);
         $config = $this->config();
-        $history = new PasswordHistoryService(new PasswordHasher(PASSWORD_BCRYPT, ['cost' => 4]), $config);
         $translator = $this->createStub(TranslatorInterface::class);
         $translator->method('withDefaultCategory')->willReturnSelf();
+        $history = new PasswordHistoryService(
+            new PasswordHasher(PASSWORD_BCRYPT, ['cost' => 4]),
+            $config,
+            $translator,
+        );
         return new ScimController(
             new DataResponseFactory(new Psr17Factory()),
             $requests,
-            $passwordGenerator ?? new RandomPasswordGenerator(),
+            $passwordGenerator ?? new RandomPasswordGenerator($config),
             $history,
             new UserCreationHelper(
                 new MailService($this->createStub(MailerInterface::class), '/tmp', new View(), $translator, $this->createStub(UrlGeneratorInterface::class)),

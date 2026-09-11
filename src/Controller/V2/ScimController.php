@@ -8,6 +8,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use YiiRocks\Voyti\Api\Scim\ScimEtag;
 use RuntimeException;
+use YiiRocks\Voyti\Exception\PasswordPolicyViolationException;
 use YiiRocks\Voyti\Event\User\UserEvent;
 use YiiRocks\Voyti\Model\User;
 use YiiRocks\Voyti\Service\Password\PasswordGeneratorInterface;
@@ -150,13 +151,15 @@ final readonly class ScimController
             return $this->error('userName and emails[0].value are required', Status::BAD_REQUEST);
         }
 
-        $user = $this->userCreationHelper->buildUser(
-            $email,
-            $username,
-            (string) ($body['password'] ?? $this->passwordGenerator->generate(20)),
-        );
         try {
+            $user = $this->userCreationHelper->buildUser(
+                $email,
+                $username,
+                (string) ($body['password'] ?? $this->passwordGenerator->generate(20)),
+            );
             $this->userCreationHelper->persistAndNotifySkippingConfirmation($user);
+        } catch (PasswordPolicyViolationException $exception) {
+            return $this->error(implode(' ', $exception->getErrors()), Status::BAD_REQUEST, 'invalidValue');
         } catch (RuntimeException $exception) {
             return $this->error($exception->getMessage(), Status::CONFLICT);
         }
@@ -403,6 +406,8 @@ final readonly class ScimController
                     $user->setBlockedAt($active ? null : time());
                 }
             }, $password);
+        } catch (PasswordPolicyViolationException $exception) {
+            return $this->error(implode(' ', $exception->getErrors()), Status::BAD_REQUEST, 'invalidValue');
         } catch (RuntimeException $exception) {
             return $this->error($exception->getMessage(), Status::BAD_REQUEST);
         }
