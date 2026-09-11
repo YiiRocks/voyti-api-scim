@@ -232,8 +232,12 @@ final class ScimControllerTest extends TestCase
         return new ScimController(
             $factory,
             $this->createStub(RequestProviderInterface::class),
-            new RandomPasswordGenerator(),
-            $history = new PasswordHistoryService(new PasswordHasher(PASSWORD_BCRYPT, ['cost' => 4]), $this->config()),
+            new RandomPasswordGenerator($this->config()),
+            $history = new PasswordHistoryService(
+                new PasswordHasher(PASSWORD_BCRYPT, ['cost' => 4]),
+                $this->config(),
+                $this->translator(),
+            ),
             new UserCreationHelper(
                 new MailService(
                     $this->createStub(MailerInterface::class),

@@ -217,11 +217,16 @@ final class BulkControllerTest extends DatabaseTestCase
             $this->createStub(ManagerInterface::class),
             $requests,
         );
-        $history = new PasswordHistoryService(new PasswordHasher(PASSWORD_BCRYPT, ['cost' => 4]), $this->config());
+        $config = $this->config();
+        $history = new PasswordHistoryService(
+            new PasswordHasher(PASSWORD_BCRYPT, ['cost' => 4]),
+            $config,
+            $this->translator(),
+        );
         $users = new ScimController(
             $factory,
             $requests,
-            new RandomPasswordGenerator(),
+            new RandomPasswordGenerator($config),
             $history,
             new UserCreationHelper(
                 new MailService($this->createStub(MailerInterface::class), '/tmp', new View(), $this->translator(), $this->createStub(UrlGeneratorInterface::class)),
